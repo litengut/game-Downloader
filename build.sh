@@ -1,0 +1,1 @@
+✗ docker build --pull -t bun-hello-world .
