@@ -6,6 +6,7 @@ if [ -d "/mnt/games" ]; then
     MOUNT_UID=$(stat -c '%u' /mnt/games)
     MOUNT_GID=$(stat -c '%g' /mnt/games)
     echo "Detected /mnt/games owner: UID=$MOUNT_UID, GID=$MOUNT_GID"
+    ls -ld /mnt/games
 
     if [ -z "$PUID" ]; then
         echo "PUID not specified. Using detected UID: $MOUNT_UID"
