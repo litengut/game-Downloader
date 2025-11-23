@@ -17,11 +17,8 @@ if ! id -u "$PUID" >/dev/null 2>&1; then
     useradd -u "$PUID" -g "$PGID" -m -s /bin/sh appuser
 fi
 
-# Get the username for the PUID
-USERNAME=$(getent passwd "$PUID" | cut -d: -f1)
-
 # Ensure the app directory is owned by the user
 chown -R "$PUID:$PGID" /usr/src/app
 
-# Execute the command as the user
-exec gosu "$USERNAME" "$@"
+# Execute the command as the user:group
+exec gosu "$PUID:$PGID" "$@"
