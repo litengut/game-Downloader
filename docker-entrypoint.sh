@@ -1,6 +1,23 @@
 #!/bin/sh
 set -e
 
+# Auto-detect permissions from /mnt/games if PUID/PGID are not set
+if [ -d "/mnt/games" ]; then
+    MOUNT_UID=$(stat -c '%u' /mnt/games)
+    MOUNT_GID=$(stat -c '%g' /mnt/games)
+    echo "Detected /mnt/games owner: UID=$MOUNT_UID, GID=$MOUNT_GID"
+
+    if [ -z "$PUID" ]; then
+        echo "PUID not specified. Using detected UID: $MOUNT_UID"
+        PUID="$MOUNT_UID"
+    fi
+
+    if [ -z "$PGID" ]; then
+        echo "PGID not specified. Using detected GID: $MOUNT_GID"
+        PGID="$MOUNT_GID"
+    fi
+fi
+
 # Default to UID 1000 (bun) if not specified
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}
