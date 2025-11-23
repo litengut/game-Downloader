@@ -6,6 +6,7 @@ import path from "node:path";
 // Main execution
 console.log("start");
 const DIR = process.env.GAMES_DIR || "/mnt/games";
+const SCAN_INTERVAL = parseInt(process.env.SCAN_INTERVAL || "60000", 10);
 
 async function processDirectory(directory: string) {
   console.log(`Scanning ${directory}...`);
@@ -70,8 +71,16 @@ async function processDirectory(directory: string) {
   }
 }
 
-if (fs.existsSync(DIR)) {
-  processDirectory(DIR).catch(console.error);
-} else {
-  console.error(`Directory ${DIR} not found.`);
+async function main() {
+  while (true) {
+    if (fs.existsSync(DIR)) {
+      await processDirectory(DIR).catch(console.error);
+    } else {
+      console.error(`Directory ${DIR} not found.`);
+    }
+    console.log(`Waiting ${SCAN_INTERVAL / 1000} seconds before next scan...`);
+    await new Promise((resolve) => setTimeout(resolve, SCAN_INTERVAL));
+  }
 }
+
+main();
