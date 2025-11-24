@@ -29,7 +29,7 @@ COPY . .
 # copy production dependencies and source code into final image
 FROM base AS release
 # # Install gosu for PUID/PGID support
-# RUN apt-get update && apt-get install -y gosu && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y gosu && rm -rf /var/lib/apt/lists/*
 
 COPY --from=install --chown=bun:bun /temp/prod/node_modules node_modules
 COPY --from=prerelease --chown=bun:bun /usr/src/app/src src
