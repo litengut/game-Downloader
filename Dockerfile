@@ -43,6 +43,5 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # run the app
 # USER bun
 ENV TERM=xterm-256color
-EXPOSE 3000/tcp
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD [ "bun", "run", "src/index.ts" ]
