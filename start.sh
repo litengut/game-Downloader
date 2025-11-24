@@ -1,4 +1,5 @@
 sudo docker run -d \
+-u $(id -u):$(id -g) \
 -e PUID=3000 \
 -e PGID=3000 \
 -e FIX_PERMISSIONS=true \
