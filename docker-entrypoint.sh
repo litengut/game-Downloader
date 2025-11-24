@@ -1,12 +1,14 @@
 #!/bin/sh
 set -e
 
-# Auto-detect permissions from /mnt/games if PUID/PGID are not set
-if [ -d "/mnt/games" ]; then
-    MOUNT_UID=$(stat -c '%u' /mnt/games)
-    MOUNT_GID=$(stat -c '%g' /mnt/games)
-    echo "Detected /mnt/games owner: UID=$MOUNT_UID, GID=$MOUNT_GID"
-    ls -ld /mnt/games
+GAMES_DIR=${GAMES_DIR:-/mnt/games}
+
+# Auto-detect permissions from GAMES_DIR if PUID/PGID are not set
+if [ -d "$GAMES_DIR" ]; then
+    MOUNT_UID=$(stat -c '%u' "$GAMES_DIR")
+    MOUNT_GID=$(stat -c '%g' "$GAMES_DIR")
+    echo "Detected $GAMES_DIR owner: UID=$MOUNT_UID, GID=$MOUNT_GID"
+    ls -ld "$GAMES_DIR"
 
     if [ -z "$PUID" ]; then
         echo "PUID not specified. Using detected UID: $MOUNT_UID"
@@ -33,6 +35,13 @@ fi
 # Create user if it doesn't exist
 if ! id -u "$PUID" >/dev/null 2>&1; then
     useradd -u "$PUID" -g "$PGID" -m -s /bin/sh appuser
+fi
+
+# Optional: Fix permissions recursively
+if [ "${FIX_PERMISSIONS:-false}" = "true" ]; then
+    echo "Fixing permissions recursively on $GAMES_DIR..."
+    chown -R "$PUID:$PGID" "$GAMES_DIR"
+    echo "Permissions fixed."
 fi
 
 # Ensure the app directory is owned by the user
