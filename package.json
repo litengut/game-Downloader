@@ -6,9 +6,14 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "decrypt-dlc": "^2.0.1",
+    "elysia": "latest",
+    "form-data": "^4.0.5",
+    "google-auth-library": "^10.5.0",
+    "googleapis": "^169.0.0"
   },
   "devDependencies": {
+    "@types/node": "^25.0.3",
     "bun-types": "latest"
   },
   "module": "src/index.js"
