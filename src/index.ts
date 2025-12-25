@@ -1,6 +1,6 @@
 import { downloadFromList } from "./download";
 import { decryptDLC } from "./decrypt";
-import fs from "node:fs";
+import fs from "fs";
 import path from "node:path";
 
 // Main execution
@@ -10,6 +10,8 @@ const SCAN_INTERVAL = parseInt(process.env.SCAN_INTERVAL || "60000", 10);
 
 async function processDirectory(directory: string) {
   console.log(`Scanning ${directory}...`);
+
+  const outputfolder = path.join(directory, "downloads");
 
   let entries;
   try {
@@ -21,7 +23,7 @@ async function processDirectory(directory: string) {
 
   // Check for .dlc files in this directory
   const dlcFile = entries.find(
-    (entry) => entry.isFile() && entry.name.endsWith(".dlc")
+    (entry) => entry.isFile() && entry.name.endsWith(".dlc"),
   );
   const linksFile = path.join(directory, "links.txt");
 
@@ -44,7 +46,7 @@ async function processDirectory(directory: string) {
       }
     } else {
       console.log(
-        `links.txt already exists in ${directory}, skipping decryption.`
+        `links.txt already exists in ${directory}, skipping decryption.`,
       );
     }
   }
@@ -59,14 +61,23 @@ async function processDirectory(directory: string) {
       .filter((line) => line.length > 0);
 
     if (links.length > 0) {
-      await downloadFromList(links, directory);
+      await downloadFromList(links, outputfolder);
     }
   }
+}
+async function scanDirectory(directory: string) {
+  let entries;
+  try {
+    entries = fs.readdirSync(directory, { withFileTypes: true });
+  } catch (e) {
+    console.error(`Failed to read directory ${directory}:`, e);
+    return;
+  }
 
-  // Recurse into subdirectories
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      await processDirectory(path.join(directory, entry.name));
+      console.log(entry.parentPath);
+      await processDirectory(path.join(entry.parentPath, entry.name));
     }
   }
 }
@@ -74,7 +85,7 @@ async function processDirectory(directory: string) {
 async function main() {
   while (true) {
     if (fs.existsSync(DIR)) {
-      await processDirectory(DIR).catch(console.error);
+      await scanDirectory(DIR);
     } else {
       console.error(`Directory ${DIR} not found.`);
     }

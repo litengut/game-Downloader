@@ -1,0 +1,13 @@
+---
+services:
+  gameDownloader:
+    image: game-downloader:latest
+    container_name: game-downloader
+    environment:
+      - PUID=3000
+      - PGID=3000
+      - FIX_PERMISSIONS=true
+      - GAMES_DIR=/mnt/games
+    volumes:
+      - /mnt/junk/games/download:/mnt/games # Mount local ./data to /app/data in the container
+    restart: unless-stopped

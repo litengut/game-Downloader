@@ -25,7 +25,7 @@ export async function downloadFile(
   auth: OAuth2Client,
   fileId: string,
   outputFolder: string,
-  retries = 3
+  retries = 3,
 ): Promise<{
   success: boolean;
   fileName?: string;
@@ -59,7 +59,7 @@ export async function downloadFile(
       }
     }
 
-    console.log(`⬇️  Downloading ${fileName}...`);
+    console.log(`⬇️  Downloading ${filePath}...`);
 
     const dest = fs.createWriteStream(filePath);
     const bar = new cliProgress.SingleBar(
@@ -67,13 +67,13 @@ export async function downloadFile(
         stream: process.stdout,
         noTTYOutput: false,
       },
-      cliProgress.Presets.shades_classic
+      cliProgress.Presets.shades_classic,
     );
     bar.start(expectedSize, 0);
 
     const res = await drive.files.get(
       { fileId, alt: "media" },
-      { responseType: "stream" }
+      { responseType: "stream" },
     );
 
     let downloadedBytes = 0;
@@ -91,11 +91,21 @@ export async function downloadFile(
           if (expectedSize && actualSize < expectedSize) {
             // Incomplete download
             console.error(
-              `❌ Incomplete download (${actualSize}/${expectedSize})`
+              `❌ Incomplete download (${actualSize}/${expectedSize})`,
             );
-            resolve({ success: false, fileName, expectedSize, actualSize });
+            resolve({
+              success: false,
+              fileName,
+              expectedSize,
+              actualSize,
+            });
           } else {
-            resolve({ success: true, fileName, expectedSize, actualSize });
+            resolve({
+              success: true,
+              fileName,
+              expectedSize,
+              actualSize,
+            });
           }
         })
         .on("error", (err: any) => {
@@ -126,7 +136,7 @@ export async function downloadFile(
 export async function downloadFromList(
   links: string[],
   outputFolder: string,
-  failedLog = "failed_downloads.txt"
+  failedLog = "failed_downloads.txt",
 ) {
   if (!fs.existsSync(outputFolder)) {
     fs.mkdirSync(outputFolder, { recursive: true });
