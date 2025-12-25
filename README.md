@@ -1,33 +1,15 @@
-# Game Downloader (TypeScript/Bun)
+# Elysia with Bun runtime
 
-This is a TypeScript port of the Python Google Drive downloader script, using Bun.
-
-## Prerequisites
-
-- [Bun](https://bun.sh/) installed.
-- `credentials.json` from Google Cloud Console (OAuth 2.0 Client ID) in the project root.
-
-## Setup
-
-1.  Install dependencies:
-
-    ```bash
-    bun install
-    ```
-
-2.  Ensure `links.txt` exists with the Google Drive links you want to download.
-
-## Usage
-
-Run the downloader:
-
+## Getting Started
+To get started with this template, simply paste this command into your terminal:
 ```bash
-bun run index.ts
+bun create elysia ./elysia-example
 ```
 
-## Notes
+## Development
+To start the development server run:
+```bash
+bun run dev
+```
 
-- The script uses `token.json` to store authentication tokens (instead of `token.pickle` used by the Python script).
-- If you have authentication issues, delete `token.json` and run the script again to re-authenticate.
-- Downloads are saved to the `downloads` folder.
-- Failed downloads are logged to `failed_downloads.txt`.
+Open http://localhost:3000/ with your browser to see the result.
